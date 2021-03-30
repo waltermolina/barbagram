@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Barbagram</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Contenedor para la Cam y el Canvas -->
+  <div id="container">
+    <!-- Video para mostrar la camara -->
+    <video id="cam" width="400" height="300" autoplay loop></video>
+    <!-- En canvas dibujo con JS -->
+    <canvas id="canvas" width="400" height="300"></canvas>
+  </div>
+
+  <!-- Cargo las librerías que hacen toda la magia -->
+  <script src="https://cdn.jsdelivr.net/npm/clmtrackr@1.1.2/build/clmtrackr.min.js"></script>
+  <script src="./utils.js"></script>
+
+  <!--Mi código JS-->
+  <script type="text/javascript">
+
+    //Recupero el elemento donde tengo que mostrar la cámara
+    let cam = document.getElementById('cam');
+
+    //Chequeo si puedo usar la cam con HTML5
+    if (navigator.mediaDevices.getUserMedia) {
+
+      //Ahora intento acceder a la cam 🎥
+      navigator.mediaDevices.getUserMedia({ video: {facingMode: 'user'} })
+        .then(function (stream) {
+          //le digo a mi video que debe mostrar la cam
+          cam.srcObject = stream;
+        })
+        .catch(function (error) {
+          console.log("No se pudo acceder a la cámara!"); //😒
+        });
+    }
+
+    //Inicializo el plugin que rastrea el rostro 😀 
+
+    var ctracker = new clm.tracker();
+    ctracker.init();
+    //y le digo que busque caras en el video de la cámara 
+    ctracker.start(cam);
+
+    //Recupero el elemento donde puedo dibujar (el canvas)
+    var canvas = document.getElementById('canvas');
+    //Aviso al navegador que voy a trabajar en 2D.
+    var cc = canvas.getContext('2d');
+
+    //Llamo a la función que dibuja en el canvas
+    dibujar()
+
+    function dibujar() {
+
+      const positions = ctracker.getCurrentPosition();
+      cc.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctracker.draw(canvas);
+
+      if (positions !== false) {
+        barba(positions);
+        tapaboca(positions);
+      }
+
+      requestAnimFrame(dibujar);
+
+    }
+
+    function barba(positions) {
+      //Barba
+      barbaImg = document.createElement('img');
+      barbaImg.src = "/img/beard3.png";
+      const wx = Math.abs(positions[13][0] - positions[1][0]) * 1; // The width is given by the face width, based on the geometry
+      const wy = Math.abs(positions[7][1] - Math.min(positions[16][1], positions[20][1])) * 1.6; // The height is given by the distance from nose to chin, times 2
+      cc.drawImage(barbaImg, positions[1][0], positions[62][1], wx, wy);
+
+    }
+
+    function tapaboca(positions) {
+      tapabocaImg = document.createElement('img');
+      tapabocaImg.src = "/img/tapaboca.png";
+
+      const wx = Math.abs(positions[13][0] - positions[1][0]) * 1; // The width is given by the face width, based on the geometry
+      const wy = Math.abs(positions[7][1] - Math.min(positions[16][1], positions[20][1])) * 1; // The height is given by the distance from nose to chin, times 2
+      cc.drawImage(tapabocaImg, positions[1][0], positions[41][1], wx, wy); // Show the mask at the center of the face
+    }
+
+
+
+  </script>
+
+</body>
+
+</html>
