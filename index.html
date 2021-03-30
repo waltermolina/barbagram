@@ -29,7 +29,7 @@
     if (navigator.mediaDevices.getUserMedia) {
 
       //Ahora intento acceder a la cam 🎥
-      navigator.mediaDevices.getUserMedia({ video: {facingMode: 'user'} })
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
         .then(function (stream) {
           //le digo a mi video que debe mostrar la cam
           cam.srcObject = stream;
@@ -51,6 +51,10 @@
     //Aviso al navegador que voy a trabajar en 2D.
     var cc = canvas.getContext('2d');
 
+    tapabocaImg = document.createElement('img');
+    tapabocaImg.src = "./img/tapaboca.png";
+    barbaImg = document.createElement('img');
+    barbaImg.src = "./img/beard3.png";
     //Llamo a la función que dibuja en el canvas
     dibujar()
 
@@ -72,8 +76,7 @@
 
     function barba(positions) {
       //Barba
-      barbaImg = document.createElement('img');
-      barbaImg.src = "/img/beard3.png";
+
       const wx = Math.abs(positions[13][0] - positions[1][0]) * 1; // The width is given by the face width, based on the geometry
       const wy = Math.abs(positions[7][1] - Math.min(positions[16][1], positions[20][1])) * 1.6; // The height is given by the distance from nose to chin, times 2
       cc.drawImage(barbaImg, positions[1][0], positions[62][1], wx, wy);
@@ -81,8 +84,7 @@
     }
 
     function tapaboca(positions) {
-      tapabocaImg = document.createElement('img');
-      tapabocaImg.src = "/img/tapaboca.png";
+
 
       const wx = Math.abs(positions[13][0] - positions[1][0]) * 1; // The width is given by the face width, based on the geometry
       const wy = Math.abs(positions[7][1] - Math.min(positions[16][1], positions[20][1])) * 1; // The height is given by the distance from nose to chin, times 2
