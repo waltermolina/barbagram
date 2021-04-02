@@ -16,17 +16,25 @@
     </div>
 
   </header>
+  
   <!-- Contenedor para la Cam y el Canvas -->
   <div id="container">
+    
     <!-- Video para mostrar la camara -->
     <video id="cam" width="800" height="600" autoplay loop></video>
+    
     <!-- En canvas dibujo con JS -->
     <canvas id="canvas" width="800" height="600"></canvas>
+
   </div>
+  
   <footer>
     <button id="barba" class="btn-filtro active" onclick="habilitarBarba()">🧔</button>
     <button id="tapaboca" class="btn-filtro active" onclick="habilitarTapaboca()">😷</button>
   </footer>
+
+
+  
   <!-- Cargo las librerías que hacen toda la magia -->
   <script src="https://cdn.jsdelivr.net/npm/clmtrackr@1.1.2/build/clmtrackr.min.js"></script>
   <script src="./utils.js"></script>
